@@ -6,6 +6,45 @@ controller:
   ingressClass: ${controller_name}
   electionID: ingress-controller-leader-${controller_name}
 
+  ## Tolerations for use with node taints
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations:
+    - key: "ingress-node"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+
+  ## Assign custom affinity rules to the ingress-node instance
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: cloud-platform-node-group
+            operator: In
+            values:
+            - ingress-controller
+
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+
+  minReadySeconds: 12
+
+  livenessProbe:
+    initialDelaySeconds: 20
+    periodSeconds: 20
+    timeoutSeconds: 5
+
+  readinessProbe:
+    initialDelaySeconds: 20
+    periodSeconds: 20
+    timeoutSeconds: 5
+
   config:
     enable-modsecurity: "true"
     custom-http-errors: 413,502,503,504
@@ -93,6 +132,7 @@ controller:
     externalTrafficPolicy: "Local"
 
 defaultBackend:
+  enabled: true
   image:
     repository: ministryofjustice/cloud-platform-custom-error-pages
     tag: "0.4"
