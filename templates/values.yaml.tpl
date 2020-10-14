@@ -3,37 +3,15 @@ controller:
   name: ${controller_name}
   replicaCount: ${replica_count}
 
-  ingressClass: ${controller_name}
-  electionID: ingress-controller-leader-${controller_name}
-
-  ## Tolerations for use with node taints
-  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  ##
-  tolerations:
-    - key: "ingress-node"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
-
-  ## Assign custom affinity rules to the ingress-node instance
-  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-  ##
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: cloud-platform-node-group
-            operator: In
-            values:
-            - ingress-controller
-
   updateStrategy:
     rollingUpdate:
       maxUnavailable: 1
     type: RollingUpdate
 
   minReadySeconds: 12
+
+  ingressClass: ${controller_name}
+  electionID: ingress-controller-leader-${controller_name}
 
   livenessProbe:
     initialDelaySeconds: 20
