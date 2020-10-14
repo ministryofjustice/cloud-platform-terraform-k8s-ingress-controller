@@ -8,7 +8,7 @@ Terraform module used by the Cloud Platform team to create an fallback ingress-c
 
 ```hcl
 module "k8s_ingress_controller" {
-  source = "github.com/ministryofjustice/cloud-platform-terraform-teams-k8s-controller?ref=0.0.1"
+  source = "github.com/ministryofjustice/cloud-platform-terraform-k8s-ingress-controller?ref=0.0.1"
 
 
 
@@ -17,7 +17,7 @@ module "k8s_ingress_controller" {
   dependence_certmanager = helm_release.cert-manager
 
   # Will be used as the ingress controller name and the class annotation
-  controller_name        = "k8s"
+  controller_name        = "k8s-nginx"
   # No of replicas 
   replica_count          = "6"
 }
