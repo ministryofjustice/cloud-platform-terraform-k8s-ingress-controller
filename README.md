@@ -10,16 +10,15 @@ Terraform module used by the Cloud Platform team to create an fallback ingress-c
 module "k8s_ingress_controller" {
   source = "github.com/ministryofjustice/cloud-platform-terraform-k8s-ingress-controller?ref=0.0.1"
 
-
-
-  # This module dependencies
-  dependence_prometheus  = helm_release.prometheus_operator
-  dependence_certmanager = helm_release.cert-manager
-
+  # boolean expression for applying standby ingress-controller for live-1 cluster only.
+  enable_fallback_ingress_controller     = terraform.workspace == local.live_workspace ? true : false
   # Will be used as the ingress controller name and the class annotation
-  controller_name        = "k8s-nginx"
-  # No of replicas 
-  replica_count          = "6"
+  controller_name        = "k8snginx"
+  replica_count          = "3"
+
+  # This module requires prometheus and certmanager
+  dependence_prometheus  = module.prometheus.helm_prometheus_operator_status
+  dependence_certmanager = module.cert_manager.helm_cert_manager_status
 }
 ```
 

@@ -25,3 +25,9 @@ variable "dependence_certmanager" {
   description = "When deployed integration_test nginx ingress controller, if certmanager is not deployed before this module fails because it uses certmanager defaultCertificate"
   default     = "NOTHING"
 }
+
+variable "enable_fallback_ingress_controller" {
+  description = "Enable to have the fallback ingress-controller"
+  default     = false
+  type        = bool
+}
