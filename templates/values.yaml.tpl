@@ -89,7 +89,38 @@ controller:
     enabled: true
   
   admissionWebhooks:
-    enabled: false
+    annotations: {}
+    enabled: true
+    failurePolicy: Fail
+    # timeoutSeconds: 10
+    port: 8443
+    certificate: "/usr/local/certificates/cert"
+    key: "/usr/local/certificates/key"
+    namespaceSelector: {}
+    objectSelector: {}
+
+    service:
+      annotations: {}
+      # clusterIP: ""
+      externalIPs: []
+      # loadBalancerIP: ""
+      loadBalancerSourceRanges: []
+      servicePort: 443
+      type: ClusterIP
+
+    patch:
+      enabled: true
+      image:
+        repository: docker.io/jettech/kube-webhook-certgen
+        tag: v1.5.0
+        pullPolicy: IfNotPresent
+      ## Provide a priority class name to the webhook patching job
+      ##
+      priorityClassName: ""
+      podAnnotations: {}
+      nodeSelector: {}
+      tolerations: []
+      runAsUser: 2000
 
   stats:
     enabled: true
