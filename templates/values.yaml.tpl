@@ -24,8 +24,7 @@ controller:
     timeoutSeconds: 5
 
   config:
-    enable-modsecurity: "true"
-    server-tokens: "false"
+    enable-modsecurity: "false"
     custom-http-errors: 413,502,503,504
     generate-request-id: "true"
     proxy-buffer-size: "16k"
