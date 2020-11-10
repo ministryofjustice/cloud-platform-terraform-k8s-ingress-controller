@@ -24,7 +24,7 @@ controller:
     timeoutSeconds: 5
 
   config:
-    enable-modsecurity: "true"
+    enable-modsecurity: "false"
     custom-http-errors: 413,502,503,504
     generate-request-id: "true"
     proxy-buffer-size: "16k"
@@ -88,7 +88,38 @@ controller:
     enabled: true
   
   admissionWebhooks:
-    enabled: false
+    annotations: {}
+    enabled: true
+    failurePolicy: Fail
+    # timeoutSeconds: 10
+    port: 8443
+    certificate: "/usr/local/certificates/cert"
+    key: "/usr/local/certificates/key"
+    namespaceSelector: {}
+    objectSelector: {}
+
+    service:
+      annotations: {}
+      # clusterIP: ""
+      externalIPs: []
+      # loadBalancerIP: ""
+      loadBalancerSourceRanges: []
+      servicePort: 443
+      type: ClusterIP
+
+    patch:
+      enabled: true
+      image:
+        repository: docker.io/jettech/kube-webhook-certgen
+        tag: v1.5.0
+        pullPolicy: IfNotPresent
+      ## Provide a priority class name to the webhook patching job
+      ##
+      priorityClassName: ""
+      podAnnotations: {}
+      nodeSelector: {}
+      tolerations: []
+      runAsUser: 2000
 
   stats:
     enabled: true
@@ -98,6 +129,8 @@ controller:
     serviceMonitor:
       enabled: true
       namespace: ingress-controllers
+      additionalLabels:
+        release: prometheus-operator
 
 %{ if default_cert != "" }
   extraArgs:
