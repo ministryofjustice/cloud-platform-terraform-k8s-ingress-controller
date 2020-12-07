@@ -12,6 +12,31 @@ controller:
 
   ingressClass: ${controller_name}
   electionID: ingress-controller-leader-${controller_name}
+%{ if enable_ingress_controller_affinity_and_tolerations ~}
+  ## Tolerations for use with node taints
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations:
+    - key: "ingress-node"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+
+  ## Assign custom affinity rules to the Ingress controller instance
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kops.k8s.io/instancegroup
+            operator: In
+            values:
+            - ingress-nodes-1.17.12-eu-west-2a
+            - ingress-nodes-1.17.12-eu-west-2b
+            - ingress-nodes-1.17.12-eu-west-2c
+%{ endif ~}
 
   livenessProbe:
     initialDelaySeconds: 20
