@@ -19,6 +19,7 @@ resource "helm_release" "k8s_ingress_nginx" {
   values = [templatefile("${path.module}/templates/values.yaml.tpl", {
     controller_name = var.controller_name
     default_cert    = var.default_cert
+    enable_ingress_controller_affinity_and_tolerations = var.enable_ingress_controller_affinity_and_tolerations
     replica_count   = var.replica_count
   })]
 

@@ -31,3 +31,8 @@ variable "enable_fallback_ingress_controller" {
   default     = false
   type        = bool
 }
+variable "enable_ingress_controller_affinity_and_tolerations" {
+    description = "Enable or not Ingress Controller node affinity (check helm values for the expressions)"
+  default     = false
+  type        = bool
+}
